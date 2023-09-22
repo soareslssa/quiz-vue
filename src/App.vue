@@ -7,13 +7,24 @@
       <template v-for="(answer, index) in this.answers" :key="index">
         <input 
         v-model="this.choosen_answer"
+        :disabled="this.answerSubmited"
         type="radio" 
         name="options" 
         :value="answer">
         <label v-html="answer"/><br>
       </template>
+      
+      <section class="result" v-if="this.answerSubmited">
+        <h4 v-if="this.choosen_answer == this.correctAnswer">
+          &#9989; You got it right! The answer '{{ this.correctAnswer }}' is correct
+        </h4>
+        <h4 v-else>
+          &#10060; You got it wrong! The answer '{{ this.correctAnswer }}' is correct
+        </h4>
+        <button class="send">Next Question</button>
+      </section>
 
-      <button @click="submitAnswer()" class="send">Send</button>
+      <button @click="submitAnswer()" v-if="!this.answerSubmited" class="send">Send</button>
     </template>
   
  
@@ -29,7 +40,8 @@ export default {
       question: undefined,
       incorrectAnswers: undefined,
       correctAnswer: undefined,
-      choosen_answer: undefined
+      choosen_answer: undefined,
+      answerSubmited: false
     }
   },
   computed: {
@@ -54,6 +66,8 @@ export default {
         alert('Pick one of the options');
         return;
       }
+
+      this.answerSubmited = true;
 
       if(this.choosen_answer == this.correctAnswer){
         alert('You got it right!');
