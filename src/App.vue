@@ -1,7 +1,10 @@
 <template>
   <div>
+    
+    <ScoreBoard :winCount="this.winCount" :loseCount="this.loseCount" />
 
     <template v-if="this.question">
+      
        <h1 v-html="this.question"/>
 
       <template v-for="(answer, index) in this.answers" :key="index">
@@ -33,15 +36,22 @@
 
 <script>
 
+import ScoreBoard from '@/components/ScoreBoard.vue'
+
 export default {
   name: 'App',
+  components: {
+    ScoreBoard
+  },
   data () {
     return {
       question: undefined,
       incorrectAnswers: undefined,
       correctAnswer: undefined,
       choosen_answer: undefined,
-      answerSubmited: false
+      answerSubmited: false,
+      winCount: 0,
+      loseCount: 0
     }
   },
   computed: {
@@ -64,9 +74,9 @@ export default {
       this.answerSubmited = true;
 
       if(this.choosen_answer == this.correctAnswer){
-        console.log('You got it right!');
+        this.winCount++;
       } else {
-        console.log('You got ir wrong!')
+        this.loseCount++;
       }
     },
     getNewQuestion() {
