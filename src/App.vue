@@ -1,8 +1,6 @@
 <template>
   <div>
-    <h1>
-      Pergunta 1
-    </h1>
+    <h1 v-html="this.question"/>
 
     <input type="radio" name="options" value="true">
     <label>True</label><br>
@@ -18,8 +16,21 @@
 
 export default {
   name: 'App',
-  components: {
-
+  data () {
+    return {
+      question: undefined,
+      incorrectAnswers: undefined,
+      correctAnswer: undefined
+    }
+  },
+  created () {
+    this.axios
+    .get('https://opentdb.com/api.php?amount=1&category=12&type=boolean')
+    .then((response) => {
+        this.question = response.data.results[0].question
+        this.incorrectAnswers = response.data.results[0].incorrect_answers
+        this.correctAnswer = response.data.results[0].correct_answer
+    })
   }
 }
 </script>
