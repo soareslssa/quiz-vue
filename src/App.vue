@@ -15,13 +15,13 @@
       </template>
       
       <section class="result" v-if="this.answerSubmited">
-        <h4 v-if="this.choosen_answer == this.correctAnswer">
-          &#9989; You got it right! The answer '{{ this.correctAnswer }}' is correct
-        </h4>
-        <h4 v-else>
-          &#10060; You got it wrong! The answer '{{ this.correctAnswer }}' is correct
-        </h4>
-        <button class="send">Next Question</button>
+        <h4 
+        v-if="this.choosen_answer == this.correctAnswer"
+        v-html="'&#9989; You got it right! The answer ' +  this.correctAnswer  + ' is correct'"></h4>
+
+        <h4 v-else v-html="'&#10060; You got it wrong! The answer ' + this.correctAnswer + ' is correct'"></h4>
+        
+        <button @click="getNewQuestion()" class="send">Next Question</button>
       </section>
 
       <button @click="submitAnswer()" v-if="!this.answerSubmited" class="send">Send</button>
@@ -52,13 +52,7 @@ export default {
    }
   },
   created () {
-    this.axios
-    .get('https://opentdb.com/api.php?amount=1&category=11&type=multiple')
-    .then((response) => {
-        this.question = response.data.results[0].question
-        this.incorrectAnswers = response.data.results[0].incorrect_answers
-        this.correctAnswer = response.data.results[0].correct_answer
-    })
+    this.getNewQuestion()
   },
   methods: {
     submitAnswer() {
@@ -70,10 +64,24 @@ export default {
       this.answerSubmited = true;
 
       if(this.choosen_answer == this.correctAnswer){
-        alert('You got it right!');
+        console.log('You got it right!');
       } else {
-        alert('You got ir wrong!')
+        console.log('You got ir wrong!')
       }
+    },
+    getNewQuestion() {
+
+      this.question = undefined;
+      this.choosen_answer = undefined;
+      this.answerSubmited = false;
+
+      this.axios
+      .get('https://opentdb.com/api.php?amount=1&category=11&type=multiple')
+      .then((response) => {
+          this.question = response.data.results[0].question
+          this.incorrectAnswers = response.data.results[0].incorrect_answers
+          this.correctAnswer = response.data.results[0].correct_answer
+      })
     }
   }
 }
