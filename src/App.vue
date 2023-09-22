@@ -1,14 +1,21 @@
 <template>
   <div>
-    <h1 v-html="this.question"/>
 
-    <input type="radio" name="options" value="true">
-    <label>True</label><br>
+    <template v-if="this.question">
+       <h1 v-html="this.question"/>
 
-    <input type="radio" name="options" value="false">
-    <label>False</label><br>
-
-    <button class="send">Send</button>
+      <template v-for="(answer, index) in this.answers" :key="index">
+        <input 
+        type="radio" 
+        name="options" 
+        value="answer">
+        <label v-html="answer"/><br>
+      </template>
+      
+      <button class="send">Send</button>
+    </template>
+  
+ 
   </div>
 </template>
 
@@ -23,9 +30,16 @@ export default {
       correctAnswer: undefined
     }
   },
+  computed: {
+   answers() {
+    let answers = JSON.parse(JSON.stringify(this.incorrectAnswers));
+    answers.splice(Math.round(Math.random() * answers.length), 0 ,this.correctAnswer);
+    return answers;
+   }
+  },
   created () {
     this.axios
-    .get('https://opentdb.com/api.php?amount=1&category=12&type=boolean')
+    .get('https://opentdb.com/api.php?amount=1&category=11&type=multiple')
     .then((response) => {
         this.question = response.data.results[0].question
         this.incorrectAnswers = response.data.results[0].incorrect_answers
